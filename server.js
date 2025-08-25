@@ -16,4 +16,10 @@ app.post("/api/todos", (req, res) => {
   res.json(todo);
 });
 
+app.delete("/api/todos/:id", (req, res) => {
+  const id = parseInt(req.params.id);
+  todos = todos.filter((todo) => todo.id !== id);
+  res.json({ success: true });
+});
+
 app.listen(3000, () => console.log("Server running on http://localhost:3000"))
