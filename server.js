@@ -13,7 +13,7 @@ app.get("/api/todos", (req, res) => {
 app.post("/api/todos", (req, res) => {
   const todo = { id: Date.now(), text: req.body.text };
   todos.push(todo);
-  res.jsson(todo);
+  res.json(todo);
 });
 
 app.delete("/api/todos/:id", (req, res) => {
