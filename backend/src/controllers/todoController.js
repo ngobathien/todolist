@@ -1,22 +1,45 @@
 import mongoose from "mongoose";
 import Todo from "../models/todo.js";
 
-// api/todos?ppage=2&limit=1
+// api/todos?page=2&limit=1
 export const getAllTodos = async (req, res) => {
   try {
-    // Lấy dữ liệu từ database
-    const todos = await Todo.find();
-
     // Pagination
-    // page là số trang muốn xem
-    const page = parseInt(req.query.page) || 1;
+    // page là số trang hiện tại muốn xem
+    const currentPage = parseInt(req.query.currentPage) || 1;
 
-    // limit là số trang giới hạn của dữ liệu
-    const limit = parseInt(req.query.limit) || 1;
+    // limit là giới hạn của dữ liệu 1 lần trả về là bao item
+    const dataPerPage = parseInt(req.query.dataPerPage) || 3;
 
-    // Gửi phản hồi
-    // res.json(todos);
-    res.json({ success: true, message: "Lấy dữ liệu thành công", data: todos });
+    // Bỏ qua phần tử
+    const skip = (currentPage - 1) * dataPerPage;
+
+    // Lấy dữ liệu từ database
+    const todos = await Todo.find().skip(skip).limit(dataPerPage);
+
+    // Đếm tổng số lượng dữ liệu trong database
+    const totalData = await Todo.countDocuments();
+    console.log(totalData);
+
+    // Tổng số trang dữ liệu
+    const totalPages = Math.ceil(totalData / dataPerPage);
+
+    //
+    const pagination = {
+      totalPages: totalPages,
+      totalData: totalData,
+      skip: skip,
+      currentPage: currentPage,
+      dataPerPage: dataPerPage,
+    };
+
+    // Res dữ liệu dạng json
+    res.json({
+      success: true,
+      message: "Lấy dữ liệu thành công",
+      data: todos,
+      pagination: pagination,
+    });
   } catch (error) {
     console.log(error);
 

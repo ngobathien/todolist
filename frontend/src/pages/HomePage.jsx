@@ -2,6 +2,7 @@ import React from "react";
 import Title from "../components/Title";
 import ListTodos from "../components/ListTodos";
 import CreateTodo from "../components/CreateTodo";
+import Pagination from "../components/Pagination";
 
 function HomePage() {
   return (

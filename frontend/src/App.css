@@ -7,6 +7,16 @@
 .TodoCard {
   background-color: turquoise;
 }
+
+.btn_pagination {
+  padding: 10px;
+  margin: 10px;
+}
+
+.pagination {
+  display: flex;
+  justify-content: flex-start;
+}
 /* .logo {
   height: 6em;
   padding: 1.5em;
