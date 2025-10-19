@@ -12,11 +12,36 @@ export const getAllTodos = async (currentPage, dataPerPage) => {
     // Trả dữ liệu lấy từ api
     return res.data;
   } catch (error) {
-    console.log("Lỗi khi lấy todos", error);
+    console.error("Lỗi khi lấy todos", error);
+  }
+};
+
+// tạo todo mới
+export const createTodo = async (todoData) => {
+  try {
+    const res = await axios.post(`${API_URL}/todos`, { title: todoData });
+
+    console.log(res.data);
+    return res.data;
+  } catch (error) {
+    console.error("Lỗi khi tạo todo", error);
   }
 };
 
 //
-export const createTodo = async () => {};
+export const updatedTodo = async () => {
+  try {
+  } catch (error) {
+    console.error("Lỗi khi lấy todos", error);
+  }
+};
 
 //
+export const deleteTodo = async (id) => {
+  try {
+    const res = axios.delete(`${API_URL}/todos/${id}`);
+    return res;
+  } catch (error) {
+    console.error("Lỗi khi xóa todo", error);
+  }
+};

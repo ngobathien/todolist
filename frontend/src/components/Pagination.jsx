@@ -1,9 +1,6 @@
 import React, { useState } from "react";
 
 function Pagination({ currentPage, totalPages, onNext, onPrev }) {
-  //   const [currentPage, setCurrentPage] = useState(0);
-  //   const [page, setPage] = useState(1);
-
   return (
     <>
       <div className="pagination">

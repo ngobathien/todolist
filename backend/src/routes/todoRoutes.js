@@ -1,7 +1,7 @@
 import express from "express";
 import {
   createTodo,
-  deletTodo,
+  deleteTodo,
   getAllTodos,
   search,
   updateTodo,
@@ -22,6 +22,6 @@ todoRoutes.post("/", createTodo);
 todoRoutes.put("/:id", updateTodo);
 
 // Xóa todo
-todoRoutes.delete("/:id", deletTodo);
+todoRoutes.delete("/:id", deleteTodo);
 
 export default todoRoutes;

@@ -15,7 +15,10 @@ export const getAllTodos = async (req, res) => {
     const skip = (currentPage - 1) * dataPerPage;
 
     // Lấy dữ liệu từ database
-    const todos = await Todo.find().skip(skip).limit(dataPerPage);
+    const todos = await Todo.find()
+      .skip(skip)
+      .limit(dataPerPage)
+      .sort({ createdAt: -1 }); // lấy dữ liệu mới lên đầu tiên
 
     // Đếm tổng số lượng dữ liệu trong database
     const totalData = await Todo.countDocuments();
@@ -34,7 +37,7 @@ export const getAllTodos = async (req, res) => {
     };
 
     // Res dữ liệu dạng json
-    res.json({
+    res.status(200).json({
       success: true,
       message: "Lấy dữ liệu thành công",
       data: todos,
@@ -43,7 +46,7 @@ export const getAllTodos = async (req, res) => {
   } catch (error) {
     console.log(error);
 
-    res.json({
+    res.status(404).json({
       message: "Không lấy được dữ liệu",
     });
   }
@@ -52,32 +55,30 @@ export const getAllTodos = async (req, res) => {
 export const createTodo = async (req, res) => {
   try {
     // Nhận dữ liệu
-    const { title, dueDate, completed } = req.body;
+    const { title } = req.body;
 
-    //
-    if (!title) {
-      res.json({ message: "Thiếu tên công việc" });
+    // Kiểm tra trường bắt buộc cần nhập
+    if (!title || !title.trim()) {
+      return res.status(404).json({ succes: false, message: "Thiếu tên todo" });
     }
-
-    // }
 
     //
     const newTodo = new Todo({
       title: title,
-      dueDate: dueDate,
-      completed: completed, // true: công việc đã hoàn thành, false: công việc chưa hoàn thành
+
+      // completed: completed, // true: công việc đã hoàn thành, false: công việc chưa hoàn thành
     });
 
     await newTodo.save();
 
-    res.json({
+    res.status(201).json({
       succes: true,
-      message: "Thêm công việc thành công",
+      message: "Thêm công việc mới thành công",
       data: newTodo,
     });
   } catch (error) {
     console.log(error);
-    res.json({
+    res.status(404).json({
       succes: false,
       message: "Không thêm được dữ liệu",
     });
@@ -89,9 +90,25 @@ export const updateTodo = async (req, res) => {
   } catch (error) {}
 };
 
-export const deletTodo = async (req, res) => {
+// xóa todo
+export const deleteTodo = async (req, res) => {
   try {
-  } catch (error) {}
+    // lấy id todo cần xoá
+    const { id } = req.params;
+    // thực hiện xóa
+    await Todo.findByIdAndDelete(id);
+
+    res.status(201).json({
+      succes: true,
+      message: "Xóa todo thành công",
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(404).json({
+      succes: false,
+      message: "Không xóa được dữ liệu",
+    });
+  }
 };
 
 export const search = async (req, res) => {
