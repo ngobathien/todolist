@@ -1,7 +1,6 @@
 import Pagination from "./Pagination";
 import CardTodo from "./CardTodo";
 
-// nhận từ HomePage.jsx
 function ListTodos({
   todos,
   currentPage,
@@ -9,22 +8,27 @@ function ListTodos({
   onNext,
   onPrev,
   onDeleteTodo,
+  onUpdateTodo,
 }) {
-  // Giao diện
   return (
-    <>
-      {/* Card todo: thẻ hiển thị dữ liệu cho mỗi todo */}
+    <div className="max-w-5xl mx-auto">
+      {/*  */}
+      <CardTodo
+        todos={todos}
+        // xóa
+        onDeleteTodo={onDeleteTodo}
+        // cập nhật
+        onUpdateTodo={onUpdateTodo}
+      />
 
-      <CardTodo todos={todos} onDeleteTodo={onDeleteTodo} />
-
-      {/* Phân trang */}
+      {/*  */}
       <Pagination
         currentPage={currentPage}
         totalPages={totalPages}
         onNext={onNext}
         onPrev={onPrev}
       />
-    </>
+    </div>
   );
 }
 

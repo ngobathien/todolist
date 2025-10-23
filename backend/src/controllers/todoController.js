@@ -5,6 +5,7 @@ import Todo from "../models/todo.js";
 export const getAllTodos = async (req, res) => {
   try {
     // Pagination
+    // nhận dữ liệu từ client
     // page là số trang hiện tại muốn xem
     const currentPage = parseInt(req.query.currentPage) || 1;
 
@@ -48,6 +49,7 @@ export const getAllTodos = async (req, res) => {
 
     res.status(404).json({
       message: "Không lấy được dữ liệu",
+      error,
     });
   }
 };
@@ -55,7 +57,7 @@ export const getAllTodos = async (req, res) => {
 export const createTodo = async (req, res) => {
   try {
     // Nhận dữ liệu
-    const { title } = req.body;
+    const { title, deadline } = req.body;
 
     // Kiểm tra trường bắt buộc cần nhập
     if (!title || !title.trim()) {
@@ -65,6 +67,7 @@ export const createTodo = async (req, res) => {
     //
     const newTodo = new Todo({
       title: title,
+      deadline: deadline,
 
       // completed: completed, // true: công việc đã hoàn thành, false: công việc chưa hoàn thành
     });
@@ -87,7 +90,41 @@ export const createTodo = async (req, res) => {
 
 export const updateTodo = async (req, res) => {
   try {
-  } catch (error) {}
+    // nhận dữ liệu từ client
+    // id của todo
+    const { id } = req.params;
+    const { title, deadline } = req.body;
+
+    // nếu dữ liệu tồn tại thì sẽ thực hiện việc sửa
+    const updatedTodo = await Todo.findByIdAndUpdate(
+      id,
+      {
+        title,
+        deadline,
+      },
+      { new: true }
+    );
+
+    // kiểm tra todo có tồn tại không bằng id
+    if (!updatedTodo) {
+      return res.status(404).json({
+        success: false,
+        message: "Không tìm thấy dữ liệu todo",
+      });
+    }
+    // trả về phản hồi
+    res.status(200).json({
+      success: false,
+      message: "Cập nhật todo thành công",
+      data: updatedTodo,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(404).json({
+      succes: false,
+      message: "Không cập nhật được dữ liệu",
+    });
+  }
 };
 
 // xóa todo

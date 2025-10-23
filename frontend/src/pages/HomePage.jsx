@@ -3,7 +3,12 @@ import Title from "../components/Title";
 import ListTodos from "../components/ListTodos";
 import CreateTodo from "../components/CreateTodo";
 import { toast, ToastContainer } from "react-toastify";
-import { createTodo, deleteTodo, getAllTodos } from "../services/todoServices";
+import {
+  createTodo,
+  deleteTodo,
+  getAllTodos,
+  updatedTodo,
+} from "../services/todoServices";
 
 function HomePage() {
   const [todos, setTodos] = useState([]);
@@ -17,6 +22,7 @@ function HomePage() {
   const [totalPages, setTotalPages] = useState(1);
   const dataPerPage = 3;
 
+  // lấy dữ liệu từ api
   const fetchTodos = async () => {
     try {
       const todosData = await getAllTodos(currentPage, dataPerPage);
@@ -30,12 +36,13 @@ function HomePage() {
       setError(error.message);
     }
   };
+
   // load dữ liệu
   useEffect(() => {
     fetchTodos();
   }, [currentPage]);
 
-  // Xử lý sự kiện
+  // xử lý sự kiện nhấn nút quay về phân trang sau
   const nextClick = () => {
     setCurrentPage(currentPage + 1);
     if (currentPage === totalPages) {
@@ -43,12 +50,14 @@ function HomePage() {
     }
   };
 
+  // xử lý sự kiện nhấn nút quay về phân trang trước
   const prevClick = () => {
     setCurrentPage(currentPage - 1);
     if (currentPage === 1) {
       setCurrentPage(1);
     }
   };
+
   // hàm xử lý thêm todo mới
   const handleCreateTodo = async (newTodo) => {
     try {
@@ -66,9 +75,27 @@ function HomePage() {
     }
   };
 
-  //
+  // hàm xử lý sửa todo
+  const handleUpdateTodo = async (id, todoData) => {
+    try {
+      // gọi hàm updatedTodo và truyền data vào
+      // const todoData = await createTodo(newTodo);
+      // setTodos([...todos, todoData]);
+
+      await updatedTodo(id, todoData);
+      // Sau khi thêm xong → load lại dữ liệu trang hiện tại
+      const todosData = await getAllTodos(currentPage, dataPerPage);
+      setTodos(todosData.data);
+      setTotalPages(todosData.pagination.totalPages);
+    } catch (error) {
+      console.error("Lỗi khi sửa todo todo", error);
+    }
+  };
+
+  // hàm xử lý xóa todo mới
   const handleDeleteTodo = async (id) => {
     try {
+      // gọi api xóa todo
       await deleteTodo(id);
       // Sau khi thêm xong → load lại dữ liệu trang hiện tại
       const todosData = await getAllTodos(currentPage, dataPerPage);
@@ -78,6 +105,8 @@ function HomePage() {
       console.error("Lỗi khi thêm todo mới", error);
     }
   };
+
+  //
   return (
     <>
       {/* Tiêu đề */}
@@ -89,6 +118,7 @@ function HomePage() {
       {/* Hiển thị danh sách todos*/}
       <ListTodos
         todos={todos}
+        onUpdateTodo={handleUpdateTodo}
         onDeleteTodo={handleDeleteTodo}
         currentPage={currentPage}
         totalPages={totalPages}

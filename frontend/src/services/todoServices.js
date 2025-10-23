@@ -17,9 +17,10 @@ export const getAllTodos = async (currentPage, dataPerPage) => {
 };
 
 // tạo todo mới
+// truyền vào dữ liệu mới
 export const createTodo = async (todoData) => {
   try {
-    const res = await axios.post(`${API_URL}/todos`, { title: todoData });
+    const res = await axios.post(`${API_URL}/todos`, todoData); // { title: todoData }
 
     console.log(res.data);
     return res.data;
@@ -28,15 +29,20 @@ export const createTodo = async (todoData) => {
   }
 };
 
-//
-export const updatedTodo = async () => {
+// cập nhật todo
+// truyền vào id của todo đó
+// truyền dữ liệu todo cần cập nhật
+export const updatedTodo = async (id, todoData) => {
   try {
+    const res = await axios.put(`${API_URL}/todos/${id}`, todoData);
+    return res.data;
   } catch (error) {
     console.error("Lỗi khi lấy todos", error);
   }
 };
 
-//
+// xóa todo
+// truyền vào id của todo cần xóa, nhờ có id mà xác định được data nào cần xóa
 export const deleteTodo = async (id) => {
   try {
     const res = axios.delete(`${API_URL}/todos/${id}`);
